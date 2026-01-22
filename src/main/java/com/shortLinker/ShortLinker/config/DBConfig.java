@@ -42,6 +42,7 @@ public class DBConfig {
         ds.setMinimumIdle(minIdle);
         return ds;
     }
+
     private void testConnection(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             log.info("✅ Database connection established successfully: {}",

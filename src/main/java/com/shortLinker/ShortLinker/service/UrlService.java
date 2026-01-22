@@ -1,6 +1,7 @@
 package com.shortLinker.ShortLinker.service;
 
 public interface UrlService {
-    public String shortenUrl(String longUrl);
-    public String getOriginalUrl(String shortKey);
+    String shortenUrl(String longUrl);
+
+    String getOriginalUrl(String shortKey);
 }

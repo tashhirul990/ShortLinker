@@ -18,24 +18,22 @@ import java.net.URI;
 @Slf4j
 public class UrlController {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(UrlController.class);
     @Autowired
     private UrlService service;
-
-    private final Logger LOGGER = LoggerFactory.getLogger(UrlController.class);
-
     @Value("${app.base-url}")
     private String baseUrl;
 
     @PostMapping(value = "/shorten")
     public String shorten(@RequestBody ShortenUrlRequest longUrl) {
         LOGGER.info("Long URL received for shortening: {}", longUrl.getLongUrl());
-        return baseUrl+"/api/"+service.shortenUrl(longUrl.getLongUrl());
+        return baseUrl + "/api/" + service.shortenUrl(longUrl.getLongUrl());
     }
 
     @GetMapping("/{shortKey}")
     public ResponseEntity<Void> redirect(@PathVariable String shortKey) {
         String longUrl = service.getOriginalUrl(shortKey);
-        if(longUrl == null) {
+        if (longUrl == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         LOGGER.info("Redirecting short key {} to long URL {}", shortKey, longUrl);

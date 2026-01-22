@@ -1,9 +1,10 @@
 package com.shortLinker.ShortLinker.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "url_mapping")
@@ -21,7 +22,7 @@ public class UrlMapping {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String longUrl;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }
 
 
