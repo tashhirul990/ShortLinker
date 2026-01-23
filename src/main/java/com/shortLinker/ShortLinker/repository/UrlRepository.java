@@ -13,11 +13,10 @@ import java.util.Optional;
 
 @Repository
 public interface UrlRepository extends JpaRepository<UrlMapping, Long> {
-    @Query("SELECT u.longUrl FROM UrlMapping u WHERE u.shortKey = :shortKey")
-    Optional<String> findLongUrlByShortKey(@Param("shortKey") String shortKey);
 
-    @Query("SELECT u.shortKey FROM UrlMapping u WHERE u.longUrl = :longUrl")
-    Optional<String> findShortKeyByLongUrl(@Param("longUrl") String longUrl);
+    Optional<UrlMapping> findByLongUrl(String shortKey);
+
+    Optional<UrlMapping> findByShortKey(String longUrl);
 
     @Modifying
     @Transactional

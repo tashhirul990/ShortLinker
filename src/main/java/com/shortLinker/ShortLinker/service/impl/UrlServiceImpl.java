@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -22,12 +23,16 @@ public class UrlServiceImpl implements UrlService {
     @Autowired
     private UrlRepository repository;
 
+    @Value("${app.expriration-days}")
+    private Integer exparationPeriod;
+
     @Override
     public String shortenUrl(String longUrl) {
-        Optional<String> existingShortKey = repository.findShortKeyByLongUrl(longUrl);
-        if (existingShortKey.isPresent()) {
-            LOGGER.info("Long URL already shortened: {}", existingShortKey.get());
-            return existingShortKey.get();
+        Optional<UrlMapping> existingUrlMapping = repository.findByLongUrl(longUrl);
+        if (existingUrlMapping.isPresent()) {
+            LOGGER.info("Long URL already shortened: {}", existingUrlMapping.get().getShortKey());
+            updateExistingUrlAccessTime(existingUrlMapping.get());
+            return existingUrlMapping.get().getShortKey();
         }
         UrlMapping entity = new UrlMapping();
         entity.setLongUrl(longUrl);
@@ -42,11 +47,18 @@ public class UrlServiceImpl implements UrlService {
         return shortKey;
     }
 
+    private void updateExistingUrlAccessTime(UrlMapping urlMapping) {
+        if (urlMapping.getCreatedAt().isBefore(OffsetDateTime.now().minusDays(exparationPeriod/2))) {
+            urlMapping.setCreatedAt(OffsetDateTime.now());
+            repository.save(urlMapping);
+        }
+    }
+
     @Override
     public String getOriginalUrl(String shortKey) {
-        byte[] bytes = repository.findLongUrlByShortKey(shortKey)
-                .orElseThrow(() -> new RuntimeException("URL not found"))
-                .getBytes(StandardCharsets.UTF_8);
-        return new String(bytes, StandardCharsets.UTF_8);
+         Optional<UrlMapping> urlMapping = Optional.ofNullable(repository.findByShortKey(shortKey)
+                 .orElseThrow(() -> new RuntimeException("URL not found")));
+         updateExistingUrlAccessTime(urlMapping.get());
+        return urlMapping.get().getLongUrl();
     }
 }
