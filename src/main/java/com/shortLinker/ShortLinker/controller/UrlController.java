@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.sql.Timestamp;
 
 @RestController
 @RequestMapping("/api")
@@ -26,17 +27,24 @@ public class UrlController {
 
     @PostMapping(value = "/shorten")
     public String shorten(@RequestBody ShortenUrlRequest longUrl) {
+        Timestamp startTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("Long URL received for shortening: {}", longUrl.getLongUrl());
-        return baseUrl + "/api/" + service.shortenUrl(longUrl.getLongUrl());
+        String url = baseUrl + "/api/" + service.shortenUrl(longUrl.getLongUrl());
+        Timestamp endTime = new Timestamp(System.currentTimeMillis());
+        LOGGER.info("URL shortening completed in {} ms", endTime.getTime() - startTime.getTime());
+        return url;
     }
 
     @GetMapping("/{shortKey}")
     public ResponseEntity<Void> redirect(@PathVariable String shortKey) {
+        Timestamp startTime = new Timestamp(System.currentTimeMillis());
         String longUrl = service.getOriginalUrl(shortKey);
         if (longUrl == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         LOGGER.info("Redirecting short key {} to long URL {}", shortKey, longUrl);
+        Timestamp endTime = new Timestamp(System.currentTimeMillis());
+        LOGGER.info("Redirection completed in {} ms", endTime.getTime() - startTime.getTime());
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(longUrl))
                 .build();
