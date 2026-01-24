@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Include migration files -->
+    <include file="changelog-versions/001-create-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-versions/002-add-index.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

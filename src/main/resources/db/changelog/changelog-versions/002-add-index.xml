@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- ChangeSet: Add indexes -->
+    <changeSet id="002" author="tashhir">
+
+        <!-- Index on short_key (most important for redirects) -->
+        <createIndex indexName="idx_short_key"
+                     tableName="url_mapping">
+            <column name="short_key"/>
+        </createIndex>
+
+        <!-- Index on long_url (useful for checking duplicates) -->
+        <createIndex indexName="idx_long_url"
+                     tableName="url_mapping">
+            <column name="long_url"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet id="003" author="tashhir">
+        <insert tableName="url_mapping">
+            <column name="short_key" value="default1"/>
+            <column name="long_url" value="https://www.google.com"/>
+            <column name="created_at" valueDate="2026-01-24T00:00:00+05:30"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
