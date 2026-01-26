@@ -31,8 +31,6 @@ services:
     autoDeployTrigger: commit
 
 # Exported from Render on 2026-01-26T22:09:21Z
-version: "1"
-services:
   - type: keyvalue
     name: short-linker-redis
     plan: free
@@ -41,7 +39,6 @@ services:
     ipAllowList: []
 
 # Exported from Render on 2026-01-26T22:09:59Z
-version: "1"
 databases:
   - name: short-linker-db
     databaseName: short_linker_db
