@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.Timestamp;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 @Slf4j

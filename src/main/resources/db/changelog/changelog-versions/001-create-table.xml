@@ -19,8 +19,7 @@
 
             <!-- Short Key -->
             <column name="short_key" type="VARCHAR(20)">
-                <constraints nullable="false"
-                             unique="true"/>
+                <constraints unique="true"/>
             </column>
 
             <!-- Long URL -->
