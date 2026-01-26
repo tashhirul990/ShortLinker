@@ -1,0 +1,54 @@
+# Exported from Render on 2026-01-26T22:05:57Z
+version: "1"
+services:
+  - type: web
+    name: ShortLinker
+    runtime: docker
+    repo: https://github.com/tashhirul990/ShortLinker
+    plan: free
+    envVars:
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+      - key: REDIS_HOST
+        sync: false
+      - key: app.cache.ttl
+        sync: false
+      - key: spring.datasource.url
+        sync: false
+      - key: app.base-url
+        sync: false
+      - key: spring.jpa.hibernate.ddl-auto
+        sync: false
+      - key: spring.datasource.password
+        sync: false
+      - key: spring.datasource.username
+        sync: false
+    region: singapore
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    autoDeployTrigger: commit
+
+# Exported from Render on 2026-01-26T22:09:21Z
+version: "1"
+services:
+  - type: keyvalue
+    name: short-linker-redis
+    plan: free
+    region: singapore
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+# Exported from Render on 2026-01-26T22:09:59Z
+version: "1"
+databases:
+  - name: short-linker-db
+    databaseName: short_linker_db
+    user: short_linker_db_user
+    plan: free
+    region: singapore
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "18"
