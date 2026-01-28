@@ -1,6 +1,7 @@
 version: "1"
 
 services:
+  # Spring Boot App
   - type: web
     name: ShortLinker
     runtime: docker
@@ -9,26 +10,14 @@ services:
     region: singapore
 
     envVars:
-      # Redis Auto Link
-      - key: REDIS_HOST
+      # Redis full connection string (includes password)
+      - key: REDIS_URL
         fromService:
           type: keyvalue
           name: short-linker-redis
-          property: host
+          property: connectionString
 
-      - key: REDIS_PORT
-        fromService:
-          type: keyvalue
-          name: short-linker-redis
-          property: port
-
-      - key: REDIS_PASSWORD
-        fromService:
-          type: keyvalue
-          name: short-linker-redis
-          property: password
-
-      # PostgreSQL Auto Link
+      # PostgreSQL full JDBC URL
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: short-linker-db
@@ -59,6 +48,7 @@ services:
     plan: free
     region: singapore
     maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
 
 
 databases:
@@ -67,3 +57,4 @@ databases:
     user: short_linker_db_user
     plan: free
     region: singapore
+    postgresMajorVersion: "18"
