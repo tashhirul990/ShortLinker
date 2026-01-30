@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -35,23 +36,30 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     public String shortenUrl(String longUrl) {
-        Optional<UrlMapping> existingUrlMapping = repository.findByLongUrl(longUrl);
-        if (existingUrlMapping.isPresent()) {
-            LOGGER.info("Long URL already shortened: {}", existingUrlMapping.get().getShortKey());
-            updateExistingUrlAccessTime(existingUrlMapping.get());
-            return existingUrlMapping.get().getShortKey();
+        try {
+            Optional<UrlMapping> existing = repository.findByLongUrl(longUrl);
+            if (existing.isPresent()) {
+                return existing.get().getShortKey();
+            }
+
+            UrlMapping entity = new UrlMapping();
+            entity.setLongUrl(longUrl);
+            entity.setCreatedAt(OffsetDateTime.now());
+
+            entity = repository.save(entity);
+
+            String shortKey = Base62Encoder.encode(entity.getId());
+            entity.setShortKey(shortKey);
+
+            repository.save(entity);
+
+            return shortKey;
+
+        } catch (DataIntegrityViolationException ex) {
+            UrlMapping existing = repository.findByLongUrl(longUrl)
+                    .orElseThrow();
+            return existing.getShortKey();
         }
-        UrlMapping entity = new UrlMapping();
-        entity.setLongUrl(longUrl);
-        entity.setCreatedAt(OffsetDateTime.now());
-
-        entity = repository.save(entity); // generates ID
-
-        String shortKey = Base62Encoder.encode(entity.getId());
-        entity.setShortKey(shortKey);
-
-        repository.save(entity);
-        return shortKey;
     }
 
     private void updateExistingUrlAccessTime(UrlMapping urlMapping) {

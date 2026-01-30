@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+
+    <changeSet id="004-delete-duplicate-longurls" author="tashhirul">
+
+        <comment>
+            Delete duplicate long_url rows, keep only the one with smallest ID
+        </comment>
+
+        <sql>
+            DELETE FROM url_mapping
+            WHERE id NOT IN (
+            SELECT MIN(id)
+            FROM url_mapping
+            GROUP BY long_url
+            );
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="005" author="tashhirul">
+        <addUniqueConstraint
+                tableName="url_mapping"
+                columnNames="long_url"
+                constraintName="uk_url_mapping_long_url"/>
+
+    </changeSet>
+
+
+</databaseChangeLog>

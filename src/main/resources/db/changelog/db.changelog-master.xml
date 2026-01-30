@@ -9,5 +9,6 @@
     <!-- Include migration files -->
     <include file="changelog-versions/001-create-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog-versions/002-add-index.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-versions/003-col-modify.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
