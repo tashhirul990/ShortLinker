@@ -15,7 +15,6 @@ import java.net.URI;
 import java.sql.Timestamp;
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 public class UrlController {
 
@@ -25,11 +24,11 @@ public class UrlController {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    @PostMapping(value = "/shorten")
+    @PostMapping(value = "/short")
     public String shorten(@RequestBody ShortenUrlRequest longUrl) {
         Timestamp startTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("Long URL received for shortening: {}", longUrl.getLongUrl());
-        String url = baseUrl + "/api/" + service.shortenUrl(longUrl.getLongUrl());
+        String url = baseUrl + "/" + service.shortenUrl(longUrl.getLongUrl());
         Timestamp endTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("URL shortening completed in {} ms", endTime.getTime() - startTime.getTime());
         return url;
