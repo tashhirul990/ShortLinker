@@ -29,14 +29,14 @@ public class UrlController {
     public String shorten(@RequestBody ShortenUrlRequest longUrl) {
         Timestamp startTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("Long URL received for shortening: {}", longUrl.getLongUrl());
-        String url = baseUrl + "/" + service.shortenUrl(longUrl.getLongUrl());
+        String url = service.shortenUrl(longUrl.getLongUrl());
         Timestamp endTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("URL shortening completed in {} ms", endTime.getTime() - startTime.getTime());
         return url;
     }
 
     @GetMapping("/{shortKey}")
-    public ResponseEntity<Void> redirect(@PathVariable String shortKey) {
+    public ResponseEntity<String> redirect(@PathVariable String shortKey) {
         Timestamp startTime = new Timestamp(System.currentTimeMillis());
         String longUrl = service.getOriginalUrl(shortKey);
         if (longUrl == null) {
@@ -45,8 +45,6 @@ public class UrlController {
         LOGGER.info("Redirecting short key {} to long URL {}", shortKey, longUrl);
         Timestamp endTime = new Timestamp(System.currentTimeMillis());
         LOGGER.info("Redirection completed in {} ms", endTime.getTime() - startTime.getTime());
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(longUrl))
-                .build();
+        return ResponseEntity.ok(longUrl);
     }
 }
